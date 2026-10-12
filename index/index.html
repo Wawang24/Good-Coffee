@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brew & Bloom</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Georgia',serif}
+    body{background:#EFE6D5;color:#2C1B14;display:flex;justify-content:center}
+    .app{width:100%;max-width:420px;min-height:100vh;background:#F5EFE6;position:relative;padding-bottom:40px;box-shadow:0 0 20px rgba(0,0,0,0.1)}
+    .screen{display:none;padding:20px;animation:fadeIn .3s ease}
+    .screen.active{display:block}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    
+    /* Hero Screen */
+    .hero{background:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?q=80&w=600');background-size:cover;color:#fff;text-align:center;min-height:100vh;padding:30px 20px;display:flex;flex-direction:column;justify-content:space-between}
+    .nav{display:flex;justify-content:center;gap:15px;margin-top:15px}
+    .nav a{color:#E8D8C8;text-decoration:none;font-family:sans-serif;font-size:14px}
+    .hero-title{font-size:42px;line-height:1.2;margin-bottom:15px}
+    .hero-sub{font-size:14px;color:#E8D8C8;font-family:sans-serif;margin-bottom:25px}
+    .btn{background:#C87D46;color:#fff;border:none;padding:12px 28px;border-radius:25px;font-size:15px;cursor:pointer;font-family:sans-serif;font-weight:bold}
+    
+    /* Menu & Cards */
+    .card{background:#FFFDF9;border-radius:18px;padding:20px;text-align:center;margin-bottom:20px;box-shadow:0 4px 10px rgba(0,0,0,0.03);cursor:pointer}
+    .card-icon{font-size:45px;margin-bottom:10px}
+    .card-title{font-size:22px;margin-bottom:8px}
+    .card-desc{font-size:13px;color:#6D4C41;font-family:sans-serif;margin-bottom:12px;line-height:1.4}
+    .card-price{font-size:20px;color:#C87D46;font-weight:bold}
+    
+    /* Detail View */
+    .qty-row{display:flex;justify-content:center;align-items:center;gap:20px;margin:20px 0}
+    .qty-btn{background:#EFE6D5;border:none;width:36px;height:36px;border-radius:50%;font-size:18px;cursor:pointer}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- HERO SCREEN -->
+    <div id="homeScreen" class="screen hero active">
+      <div>
+        <h2>☕ Brew & Bloom</h2>
+        <div class="nav">
+          <a href="#" onclick="showScreen('homeScreen')">Home</a>
+          <a href="#" onclick="showScreen('storyScreen')">About</a>
+          <a href="#" onclick="showScreen('menuScreen')">Menu</a>
+        </div>
+      </div>
+      <div>
+        <h1 class="hero-title">Good<br>Coffee.<br>Good<br>Mood.</h1>
+        <p class="hero-sub">Freshly roasted beans, handcrafted drinks, and cozy moments made just for you.</p>
+        <button class="btn" onclick="showScreen('menuScreen')">Explore Menu</button>
+      </div>
+    </div>
+
+    <!-- MENU SCREEN -->
+    <div id="menuScreen" class="screen">
+      <h1 style="text-align:center;margin-bottom:20px;">Our Favorites</h1>
+      <div id="menuList"></div>
+    </div>
+
+    <!-- STORY SCREEN -->
+    <div id="storyScreen" class="screen" style="text-align:center;">
+      <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=600" style="width:100%;border-radius:15px;margin-bottom:20px;">
+      <h1 style="margin-bottom:15px;">Our Little<br>Coffee Story</h1>
+      <p style="font-family:sans-serif;font-size:14px;color:#5D4037;line-height:1.6;margin-bottom:15px;">
+        Brew & Bloom started with a simple idea: coffee should be more than a drink. It should be a moment to slow down, connect, and enjoy the little things.
+      </p>
+      <button class="btn" onclick="showScreen('menuScreen')">Visit Us</button>
+    </div>
+
+    <!-- DETAIL SCREEN -->
+    <div id="detailScreen" class="screen">
+      <button onclick="showScreen('menuScreen')" style="background:none;border:none;cursor:pointer;font-size:16px;margin-bottom:15px;">← Back</button>
+      <div class="card" style="cursor:default;">
+        <div id="dIcon" class="card-icon"></div>
+        <h2 id="dTitle" class="card-title"></h2>
+        <p id="dDesc" class="card-desc"></p>
+        <div id="dPrice" class="card-price"></div>
+        
+        <div class="qty-row">
+          <button class="qty-btn" onclick="updateQty(-1)">-</button>
+          <span id="qtyVal" style="font-family:sans-serif;font-weight:bold;">1</span>
+          <button class="qty-btn" onclick="updateQty(1)">+</button>
+        </div>
+        <button id="addBtn" class="btn" style="width:100%;" onclick="alert('Order Added!')"></button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const items = [
+      { id:1, name:'Classic Latte', price:140, icon:'☕', desc:'Rich espresso blended with smooth steamed milk.' },
+      { id:2, name:'Cheesecake', price:180, icon:'🍰', desc:"Creamy cheesecake that's perfect with coffee." },
+      { id:3, name:'Matcha Latte', price:150, icon:'🌿', desc:'Earthy premium matcha with silky steamed milk.' },
+      { id:4, name:'Butter Croissant', price:95, icon:'🥐', desc:'Flaky, buttery, freshly baked every morning.' },
+      { id:5, name:'Iced Caramel', price:155, icon:'🧊', desc:'Chilled coffee with creamy milk and caramel.' },
+      { id:6, name:'Mocha Dream', price:165, icon:'🤎', desc:'Espresso, chocolate, and milk topped with foam.' }
+    ];
+
+    let currentItem = null, qty = 1;
+
+    function renderMenu() {
+      const list = document.getElementById('menuList');
+      list.innerHTML = items.map(item => `
+        <div class="card" onclick="openDetail(${item.id})">
+          <div class="card-icon">${item.icon}</div>
+          <div class="card-title">${item.name}</div>
+          <div class="card-desc">${item.desc}</div>
+          <div class="card-price">₱${item.price}</div>
+        </div>
+      `).join('');
+    }
+
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function openDetail(id) {
+      currentItem = items.find(i => i.id === id);
+      qty = 1;
+      document.getElementById('dIcon').innerText = currentItem.icon;
+      document.getElementById('dTitle').innerText = currentItem.name;
+      document.getElementById('dDesc').innerText = currentItem.desc;
+      document.getElementById('dPrice').innerText = '₱' + currentItem.price;
+      updateUI();
+      showScreen('detailScreen');
+    }
+
+    function updateQty(delta) {
+      qty = Math.max(1, qty + delta);
+      updateUI();
+    }
+
+    function updateUI() {
+      document.getElementById('qtyVal').innerText = qty;
+      document.getElementById('addBtn').innerText = `Add to Cart • ₱${currentItem.price * qty}`;
+    }
+
+    renderMenu();
+  </script>
+</body>
+</html>
